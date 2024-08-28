@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "155857162114",
+    "project_id": "lnt-simple-ewallet",
+    "storage_bucket": "lnt-simple-ewallet.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:155857162114:android:22fa22742cb74bf55d499b",
+        "android_client_info": {
+          "package_name": "com.example.lnt_simple_ewallet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJmoabPLR4t0X2X8a9_iBgRJOSySZsOQw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
