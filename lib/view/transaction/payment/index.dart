@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lnt_simple_ewallet/controller/transaction/index.dart';
+import 'package:lnt_simple_ewallet/view/index.dart';
 import 'package:lnt_simple_ewallet/view/transaction/index.dart';
 
 class PaymentPage extends StatefulWidget {
-  // final AuthService authService;
+  final TransactionService transactionService;
 
-  // const PaymentPage({Key? key, required this.authService}) : super(key: key);
+  const PaymentPage({Key? key, required this.transactionService}) : super(key: key);
 
   @override
   State<PaymentPage> createState() => _PaymentPageState();
@@ -22,7 +24,38 @@ class _PaymentPageState extends State<PaymentPage> {
   bool _submitLoading = false;
 
   String username = '';
-  String amount = '';
+  int amount = 0;
+
+  void handleSubmit() async {
+    late String scaffoldMessage = "";
+
+    setState(() {
+      _submitLoading = true;
+    });
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    if (formKeyReg.currentState!.validate()) {
+      formKeyReg.currentState!.save();
+      
+      try {
+        await widget.transactionService.transferOut(username, amount);
+        
+        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
+
+        scaffoldMessage = "Transfer Success";
+      }  catch (e) {
+        scaffoldMessage = "Transfer Failed";
+      }
+    }
+
+    if(scaffoldMessage.isNotEmpty){
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(scaffoldMessage)));
+    } 
+    setState(() {
+      _submitLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +151,7 @@ class _PaymentPageState extends State<PaymentPage> {
                       },
                       onSaved: (value) {
                         setState(() {
-                          amount = value!;
+                          amount = int.parse(value!);
                         });
                       },
                     ),
@@ -129,7 +162,7 @@ class _PaymentPageState extends State<PaymentPage> {
                         width: double.maxFinite,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: _submitLoading ? null : () {},
+                          onPressed: _submitLoading ? null : handleSubmit,
                           child: Text(
                             _submitLoading ? "Loading" : "Send Transfer",
                             style: TextStyle(color: Colors.white),

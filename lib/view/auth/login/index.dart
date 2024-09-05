@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lnt_simple_ewallet/controller/auth/index.dart';
+import 'package:lnt_simple_ewallet/view/auth/index.dart';
+import 'package:lnt_simple_ewallet/view/index.dart';
 class LoginPage extends StatefulWidget {
-  // final AuthService authService;
+  final AuthService authService;
 
-  // const LoginPage({Key? key, required this.authService}) : super(key: key);
+  const LoginPage({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -40,9 +43,9 @@ class _LoginPageState extends State<LoginPage> {
       formKeyReg.currentState!.save();
       
       try {
-        // await widget.authService.signIn({'email': email, 'password': password});
+        await widget.authService.signIn({'email': email, 'password': password});
         
-        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
 
         scaffoldMessage = "Sign In Success";
       } on FirebaseAuthException catch (e) {
@@ -61,8 +64,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   handleTapRegister(BuildContext context) {
-    // Navigator.pushReplacement(context,
-    //     MaterialPageRoute(builder: (context) => AuthPage().renderRegister()));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => AuthView().renderRegister()));
   }
 
   @override

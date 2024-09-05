@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lnt_simple_ewallet/firebase_options.dart';
+import 'package:lnt_simple_ewallet/view/auth/index.dart';
 import 'package:lnt_simple_ewallet/view/index.dart';
 import 'package:lnt_simple_ewallet/firebase_options.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const IndexPage(),
+      home: AuthView().renderLogin(),
     );
   }
 }

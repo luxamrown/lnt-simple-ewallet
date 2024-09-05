@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-// import 'package:lnt_simple_marketplace/model/profile.dart';
-// import 'package:lnt_simple_marketplace/page/auth/login/index.dart';
-// import 'package:lnt_simple_marketplace/service/auth/auth.dart';
+import 'package:lnt_simple_ewallet/controller/auth/index.dart';
+import 'package:lnt_simple_ewallet/model/profile.dart';
+import 'package:lnt_simple_ewallet/view/auth/login/index.dart';
 
 class RegisterPage extends StatefulWidget {
-  // final AuthService authService;
+  final AuthService authService;
 
-  // const RegisterPage({ Key? key, required this.authService }): super(key: key);
+  const RegisterPage({ Key? key, required this.authService }): super(key: key);
   
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -58,10 +58,10 @@ class _RegisterPageState extends State<RegisterPage> {
       formKeyReg.currentState!.save();
 
       try {
-        // final newUser = Profile(email: email, fullname: fullname, telNum: telNum, password: password);
-        // await widget.authService.signUp(newUser);
+        final newUser = Profile(email: email, fullname: fullname, username: username, balance: 0,telNum: telNum, password: password);
+        await widget.authService.signUp(newUser);
         
-        // Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage(authService: widget.authService,)));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginPage(authService: widget.authService)));
       
         scaffoldMessage = "Sign Up Success";
       } catch (e) {
@@ -83,8 +83,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   handleTapLogin(BuildContext context) {
-    // Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => LoginPage(authService: widget.authService,)));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginPage(authService: widget.authService,)));
   }
 
   @override

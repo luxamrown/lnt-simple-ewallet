@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lnt_simple_ewallet/controller/transaction/index.dart';
+import 'package:lnt_simple_ewallet/view/index.dart';
 
 class TopupPage extends StatefulWidget {
-  // final AuthService authService;
+  final TransactionService transactionService;
 
-  // const TopupPage({Key? key, required this.authService}) : super(key: key);
+  const TopupPage({Key? key, required this.transactionService}) : super(key: key);
 
   @override
   State<TopupPage> createState() => _TopupPageState();
@@ -19,7 +21,38 @@ class _TopupPageState extends State<TopupPage> {
 
   bool _submitLoading = false;
 
-  String amount = '';
+  int amount = 0;
+
+  void handleSubmit() async {
+    late String scaffoldMessage = "";
+
+    setState(() {
+      _submitLoading = true;
+    });
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    if (formKeyReg.currentState!.validate()) {
+      formKeyReg.currentState!.save();
+      
+      try {
+        await widget.transactionService.topupBalance(amount);
+        
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
+
+        scaffoldMessage = "Top Up Success";
+      }  catch (e) {
+        scaffoldMessage = "Top Up Failed";
+      }
+    }
+
+    if(scaffoldMessage.isNotEmpty){
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(scaffoldMessage)));
+    } 
+    setState(() {
+      _submitLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +113,7 @@ class _TopupPageState extends State<TopupPage> {
                       },
                       onSaved: (value) {
                         setState(() {
-                          amount = value!;
+                          amount = int.parse(value!);
                         });
                       },
                     ),
@@ -91,7 +124,7 @@ class _TopupPageState extends State<TopupPage> {
                         width: double.maxFinite,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: _submitLoading ? null : () {},
+                          onPressed: _submitLoading ? null : handleSubmit,
                           child: Text(
                             _submitLoading ? "Loading" : "Confirm Top Up",
                             style: TextStyle(color: Colors.white),

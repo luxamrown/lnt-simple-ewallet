@@ -1,19 +1,18 @@
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lnt_simple_ewallet/view/auth/login/index.dart';
-import 'package:lnt_simple_ewallet/view/auth/register/index.dart';
+import 'package:lnt_simple_ewallet/controller/transaction/index.dart';
 import 'package:lnt_simple_ewallet/view/transaction/history/index.dart';
 import 'package:lnt_simple_ewallet/view/transaction/payment/index.dart';
 import 'package:lnt_simple_ewallet/view/transaction/topup/index.dart';
 
 class TransactionView {
-  // final authService = AuthService();
+  final transactionService = TransactionService();
   Widget renderPayment() {
-    return PaymentPage();
+    return PaymentPage(transactionService: transactionService);
   }
 
   Widget renderTopup() {
-    return TopupPage();
+    return TopupPage(transactionService: transactionService);
   }
 
   Widget renderHistory() {
