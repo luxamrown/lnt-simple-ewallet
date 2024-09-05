@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lnt_simple_ewallet/view/transaction/index.dart';
 
 class HomePage extends StatefulWidget {
   // final AuthService authService;
@@ -13,6 +14,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _balanceVisible = false;
+
+  handleClickTopup (BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionView().renderTopup()));
+  }
+
+  handleClickPayment (BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => TransactionView().renderPayment()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                                   shadowColor: Colors.transparent,
                                   ),
                                 onPressed: () {
-                                  //OnPressed Logic
+                                  handleClickPayment(context);
                                 },
                                 icon: Icon(Icons.attach_money, color: Colors.grey.shade100),
                                 label: Text("Pay",
@@ -115,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                                   shadowColor: Colors.transparent,
                                   ),
                                 onPressed: () {
-                                  //OnPressed Logic
+                                  handleClickTopup(context);
                                 },
                                 icon: Icon(Icons.add, color: Colors.grey.shade100),
                                 label: Text("Top Up",
