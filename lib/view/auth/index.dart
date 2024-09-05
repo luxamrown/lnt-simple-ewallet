@@ -1,6 +1,8 @@
 // import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lnt_simple_ewallet/view/auth/login/index.dart';
+import 'package:lnt_simple_ewallet/view/auth/profile/index.dart';
 import 'package:lnt_simple_ewallet/view/auth/register/index.dart';
 
 class AuthView {
@@ -13,14 +15,14 @@ class AuthView {
     return RegisterPage();
   }
 
-  // Widget renderProfile() {
-  //   final currentUser = authService.getCurrentUser();
+  Widget renderProfile() {
+    // final currentUser = authService.getCurrentUser();
 
-  //   return FutureBuilder(future: authService.getCurrentUser(), builder: (context, snapshot) {
-  //     if(!snapshot.hasData) return CircularProgressIndicator();
+    // return FutureBuilder(future: authService.getCurrentUser(), builder: (context, snapshot) {
+    //   if(!snapshot.hasData) return CircularProgressIndicator();
 
-  //     return ProfilePage(authService: authService, currentUser: snapshot.data!);
-  //   });
+    // });
+      return ProfilePage();
 
-  // }
+  }
 }

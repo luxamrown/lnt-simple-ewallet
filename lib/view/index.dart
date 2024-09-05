@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lnt_simple_ewallet/view/auth/index.dart';
+import 'package:lnt_simple_ewallet/view/home/index.dart';
+import 'package:lnt_simple_ewallet/view/transaction/index.dart';
 
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
@@ -16,10 +19,9 @@ class _IndexPageState extends State<IndexPage> {
   int _indexMenu = 0;
        
     final List<Widget> _widgetOptions = <Widget>[
-    // ProductPage().renderListProduct(),
-    // ProductPage().renderAddProduct(),
-    AuthView().renderLogin(),
-    AuthView().renderRegister()
+    HomePage(),
+    TransactionView().renderHistory(),
+    AuthView().renderProfile()
   ];
 
   void _onItemTapped(int index) {
@@ -34,12 +36,12 @@ class _IndexPageState extends State<IndexPage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view),
-            label: 'Products',
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle),
-            label: 'Add Product',
+            icon: Icon(Icons.wallet),
+            label: 'Transaction',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
