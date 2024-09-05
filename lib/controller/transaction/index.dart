@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lnt_simple_ewallet/controller/firebase/index.dart';
-
 class TransactionService extends FirebaseService {
   final String userCollectionConst = "users";
   final String transactionCollectionConst = "transaction";
@@ -11,7 +11,6 @@ class TransactionService extends FirebaseService {
     final User? currentUser = fireBaseAuthInstance().currentUser;
     late int currentBalance;
     var transactionCollection = FirebaseFirestore.instance.collection(transactionCollectionConst);
-
 
     firestoreInstance().collection(userCollectionConst).doc(currentUser?.uid).get().then((document) {
       currentBalance = document['balance'];
@@ -35,13 +34,9 @@ class TransactionService extends FirebaseService {
           rethrow;
       }
       } catch (e) {
-        
         rethrow;
       }
-      
     });
-    
-
   }
 
   Future transferOut(String destinationUsername, int amount) async {
@@ -51,14 +46,14 @@ class TransactionService extends FirebaseService {
     late int currentDestinationUserBalance;
     late QueryDocumentSnapshot<Map<String, dynamic>> userDestination;
 
-    firestoreInstance().collection(userCollectionConst).doc(currentUser?.uid).get().then((currentUserDoc) {
+    await firestoreInstance().collection(userCollectionConst).doc(currentUser?.uid).get().then((currentUserDoc) async {
       currentUserBalance = currentUserDoc['balance'];
-
-      try {
-        firestoreInstance().collection(userCollectionConst).where("username", isEqualTo: destinationUsername).get().then((document) {
+    
+      if(currentUserBalance < amount) {
+        tfSuccess = false;
+      } else {
+        await firestoreInstance().collection(userCollectionConst).where("username", isEqualTo: destinationUsername).get().then((document) async {
           if(document.size > 0) {
-            print(document.docs[0]['balance']);
-
             userDestination = document.docs[0];
             currentDestinationUserBalance = userDestination['balance'];
             
@@ -66,43 +61,35 @@ class TransactionService extends FirebaseService {
             currentDestinationUserBalance = currentDestinationUserBalance + amount;
 
             try {
-              print("masuk");
               firestoreInstance().collection(userCollectionConst).doc(currentUser?.uid).update({'balance': currentUserBalance});
               
               firestoreInstance().collection(userCollectionConst).doc(userDestination.id).update({'balance': currentDestinationUserBalance});
-            } catch (e) {
-              rethrow;
-            }
 
-            var transactionCollection = FirebaseFirestore.instance.collection(transactionCollectionConst);
-
-            try {
-              transactionCollection.add({
+              var transactionCollection = FirebaseFirestore.instance.collection(transactionCollectionConst);
+              
+              await transactionCollection.add({
                 'type': 'transfer',
                 'from': currentUser?.uid,
                 'to': userDestination.id,
                 'amount': amount,
                 'timestamp': date,
+              }).then((onValue) {
+                tfSuccess = true;
               });
-
-              return currentUser?.uid;
             } catch (e) {
               rethrow;
-            }
+            } 
           } else {
-            tfSuccess = false;
+            throw Error();
           }
         });
-        
-      } catch (e) {
-        rethrow;
       }
     });
 
-    if(!tfSuccess){
-      throw Exception();
+    if(tfSuccess) {
+      return true;
+    } else {
+      throw Error();
     }
-
-
   }
 }

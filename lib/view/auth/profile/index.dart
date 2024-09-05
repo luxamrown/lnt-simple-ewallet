@@ -18,30 +18,95 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final TextEditingController _fullnameController = TextEditingController();
-  final TextEditingController _telNumController = TextEditingController();
+  late TextEditingController _fullnameController = TextEditingController();
+  late TextEditingController _telNumController = TextEditingController();
   
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _profileStream;
+
+  bool _submitLoading = false;
+  bool _isEditMode = false;
+
+  String initFullname = '';
+  String initTelNum = '';
+
+
+  String fullname = '';
+  String telNum = '';
   
   @override
   void initState() {
     super.initState();
     _profileStream = widget.authService.getCurrentUser();
+    streamListener();
+  }
+
+  void streamListener() {
+    _profileStream.listen((onData) async {
+
+      setState(() {
+        fullname = onData!['fullname'];
+        telNum = onData!['telNum'];
+
+        initFullname = onData!['fullname'];
+        initTelNum = onData!['telNum'];
+
+        _fullnameController = TextEditingController(text: onData!['fullname']);
+        _telNumController = TextEditingController(text: onData!['telNum']);
+      });
+    });
+  }
+
+  void handleCancel() {
+    setState(() {
+      _isEditMode = !_isEditMode;
+
+      _fullnameController = TextEditingController(text: initFullname);
+      _telNumController = TextEditingController(text: initTelNum);
+    });
   }
 
   final formKeyReg = GlobalKey<FormState>();
 
-  bool _submitLoading = false;
-  bool _isEditMode = false;
-
-  String fullname = '';
-  String telNum = '';
   void handleLogout() {
     widget.authService.signOut();
 
     Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => AuthView().renderLogin()));
   }
+
+   void handleSubmit() async {
+    late String scaffoldMessage = "";
+
+    setState(() {
+      _submitLoading = true;
+    });
+    
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    if (formKeyReg.currentState!.validate()) {
+      formKeyReg.currentState!.save();
+      
+      try {
+        print("AHLOO ${fullname} ${telNum}");
+        await widget.authService.updateProfile(fullname, telNum);
+        
+        setState(() {
+          _isEditMode = false;
+        });
+        scaffoldMessage = "Update Profile Success";
+      }  catch (e) {
+        scaffoldMessage = "Update Profile Failed";
+      }
+    }
+
+    if(scaffoldMessage.isNotEmpty){
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(scaffoldMessage)));
+    } 
+    setState(() {
+      _submitLoading = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,11 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       children: [
                                         Expanded(
                                             child: ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _isEditMode = !_isEditMode;
-                                            });
-                                          },
+                                          onPressed: handleCancel,
                                           child: Text(
                                             "Cancel",
                                             style:
@@ -184,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         )),
                                         Expanded(
                                             child: ElevatedButton(
-                                          onPressed: () {},
+                                          onPressed: _submitLoading ? null : handleSubmit,
                                           child: Text(
                                             "Save",
                                             style:
@@ -251,7 +312,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: double.maxFinite,
                             height: 50,
                             child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: handleLogout,
                               child: Text(
                                 "Sign Out",
                                 style: TextStyle(color: Colors.white),

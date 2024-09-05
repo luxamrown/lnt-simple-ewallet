@@ -24,11 +24,11 @@ class _HistoryPageState extends State<HistoryPage> {
               ),
               Container(
                 width: double.maxFinite,
-                child: Text("Transaction History",
+                child: Text("Transaction History (still wip)",
                     textAlign: TextAlign.left,
                     style: GoogleFonts.lato(
                       textStyle: TextStyle(
-                          fontSize: 28,
+                          fontSize: 15,
                           fontWeight: FontWeight.w900,
                           color: Color(Colors.blue.value)),
                     )),

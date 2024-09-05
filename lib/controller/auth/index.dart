@@ -39,13 +39,18 @@ class AuthService extends FirebaseService {
     }
   }
 
-  // Future updateProfile(Profile profileData) async {
-  //   try {
-  //     await firestoreInstance().collection(userCollectionConst).doc(profileData.id).update(profileData.toMap());
-  //   } catch (e) {
-  //     rethrow;
-  //   }
-  // }
+  Future updateProfile(String fullname, String telNum) async {
+    final User? currentUser = fireBaseAuthInstance().currentUser;
+
+    try {
+      await firestoreInstance().collection(userCollectionConst).doc(currentUser!.uid).update({
+        'fullname': fullname,
+        'telNum': telNum
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getCurrentUser() {
     final User user = fireBaseAuthInstance().currentUser!;

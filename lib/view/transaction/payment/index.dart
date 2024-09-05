@@ -40,8 +40,7 @@ class _PaymentPageState extends State<PaymentPage> {
       
       try {
         await widget.transactionService.transferOut(username, amount);
-        
-        // Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => IndexPage()));
 
         scaffoldMessage = "Transfer Success";
       }  catch (e) {
